@@ -1,0 +1,7 @@
+{
+    "name": "dataspace",
+    "dependencies": {
+        "arches": "archesproject/arches#stable/6.1.0",
+        "webcola": "^3.4.0"
+    }
+}
