@@ -12,15 +12,15 @@ https://github.com/CNR-DHILab/dataspace
 
 posizionatevi nella root principale di arches e fate un clone
 
- - git clone https://github.com/CNR-DHILab/dataspace.git
+  - git clone https://github.com/CNR-DHILab/dataspace.git
 
 create un ambiente virtuale con python nella root principale
 
- - python -m venv ENV
+  - python -m venv ENV
 
 attivare l'ambiente virtuale
 
- -  source ENV/Scripts/activate
+  -  source ENV/Scripts/activate
 
 Installate arches con pip
 
