@@ -1,34 +1,47 @@
-**Installazione**
+## Installazione
 
 Scarica l'ultima versione stabile di arches
 
-https://github.com/archesproject/arches/archive/refs/tags/6.1.0.zip
+    https://github.com/archesproject/arches/archive/refs/tags/6.1.0.zip
 
 dezippa in una cartella
 
 forkate il progetto dataspace
 
-https://github.com/CNR-DHILab/dataspace
+    https://github.com/CNR-DHILab/dataspace
 
 posizionatevi nella root principale di arches e fate un clone
 
-  - git clone https://github.com/CNR-DHILab/dataspace.git
+    git clone https://github.com/CNR-DHILab/dataspace.git
 
-create un ambiente virtuale con python nella root principale
+create un ambiente virtuale con python nella root principale::
 
-  - python -m venv ENV
+    python -m venv ENV
 
 attivare l'ambiente virtuale
 
-  -  source ENV/Scripts/activate
+    source ENV/Scripts/activate
 
 Installate arches con pip
 
- - pip install arches
+    pip install arches
 
 Avviate elasticsearch
 
- - path/to/elastichsearc.bat
+    path/to/elastichsearc.bat
+
+settate rinominate con le vostre credenziali di postgres i file 
+
+- template_settings.py in settings.py
+- template_settings_local.py settings_local.py
+
+Installate il db di arches posizionandovi in dataspace
+    
+    python manage.py setup_db
+
+Avviate il server
+
+    python manage.py runserver
 
 
 
