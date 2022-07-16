@@ -10,3 +10,5 @@ dataspace/settings.py
 .vscode/
 _pkg_*
 CACHE
+/settings.py
+/settings_local.py
