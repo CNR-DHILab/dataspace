@@ -1,0 +1,276 @@
+{% extends "views/report-templates/default.htm" %}
+{% load i18n %}
+{% block report %}
+
+    <!-- {% block report_title_bar %} -->
+    <!-- Custom Template Report Title Bar -->
+    <!-- <div class="relative"> -->
+        <!-- Title Block -->
+        <!-- <div class="afs-report-toolbar">
+            <h1 class="afs-report-toolbar-title">
+                <span class="afs-report-name">{% trans "Physical Thing" %}:</span><span data-bind="text: displayname" class="afs-report-instance-name"></span>
+            </h1>
+        </div>
+    </div>
+    {% endblock report_title_bar %}  -->
+
+    {% block body %}
+    <div class="container">
+        <h1 class="afs-report-toolbar-title" style="font-size: 25px; padding-left: 0px; margin-bottom: 0px;">
+            <span data-bind="text: displayname" class="afs-report-instance-name" style="padding-right: auto;"></span>
+            <span class="afs-report-name" style="font-size: 20px;">{% trans "Details" %}</span>
+        </h1>
+        <div class="afs-tabbed-report">
+            <div class="afs-tabbed-report-content">
+
+                <!-- Names Tab -->
+                <div class="afs-report-page row" data-bind="if: activeSection() === 'name'">
+                    <div class="col-3">
+                        <h3 style="margin: 0px 0px 0px 60px; font-size: 17px;">Names</h3>
+                    </div>
+                    <div class="col-9">
+                        <div data-bind="component: {
+                              name: 'views/components/reports/scenes/name',
+                              params: {
+                                data: resource,
+                                cards: nameCards,
+
+                              }
+                            }"></div>
+                    </div>
+                </div>
+
+                <!-- Description Tab -->
+                <hr class="rp-tile-separator">
+                <div class="afs-report-page row" data-bind="if: activeSection() !== 'description'">
+                    <div class="col-3">
+                        <h3 style="margin: 0px 0px 0px 60px; font-size: 17px;">Description</h3>
+                    </div>
+                    <div class="col-9">
+                        <div data-bind="component: {
+                            name: 'views/components/reports/scenes/description',
+                            params: {
+                                data: resource,
+                                cards: descriptionCards,
+                            }
+                        }"></div>
+                    </div>
+                </div>
+
+                <!-- Documentation Tab -->
+                <hr class="rp-tile-separator">
+                <div class="afs-report-page row" data-bind="if: activeSection() !== 'documentation'">
+                    <div class="col-3">
+                        <h3 style="margin: 0px 0px 0px 60px; font-size: 17px;">Documentation</h3>
+                    </div>
+                    <div class="col-9">
+                        <div data-bind="component: {
+                            name: 'views/components/reports/scenes/documentation',
+                            params: {
+                                data: resource,
+                                cards: documentationCards
+                            }
+                        }"></div>
+                    </div>
+                </div>
+
+                <!-- Existence Tab -->
+                <hr class="rp-tile-separator">
+                <div class="afs-report-page row" data-bind="if: activeSection() !== 'existence'">
+                    <div class="col-3">
+                        <h3 style="margin: 0px 0px 0px 60px; font-size: 17px;">Existence</h3>
+                    </div>
+                    <div class="col-9">
+                        <div data-bind="component: {
+                            name: 'views/components/reports/scenes/existence',
+                            params: {
+                                data: resource,
+                                cards: existenceCards,
+                                events: existenceEvents,
+                                dataConfig: existenceDataConfig,
+                            }
+                        }"></div>
+                    </div>
+                </div>
+
+                <!-- Substance Tab -->
+                <hr class="rp-tile-separator">
+                <div class="afs-report-page row" data-bind="if: activeSection() !== 'substance'">
+                    <div class="col-3">
+                        <h3 style="margin: 0px 0px 0px 60px; font-size: 17px;">Substance</h3>
+                    </div>
+                    <div class="col-9">
+                        <div data-bind="component: {
+                            name: 'views/components/reports/scenes/substance',
+                            params: {
+                                data: resource,
+                                cards: substanceCards
+                            }
+                        }"></div>
+                    </div>
+                </div>
+
+                <!-- Actor Tab -->
+                <hr class="rp-tile-separator">
+                <div class="afs-report-page row" data-bind="if: activeSection() !== 'actor-relations'">
+                    <div class="col-3">
+                        <h3 style="margin: 0px 0px 0px 60px; font-size: 17px;">Actor</h3>
+                    </div>
+                    <div class="col-9">
+                        <div data-bind="component: {
+                            name: 'views/components/reports/scenes/default',
+                            params: {
+                                data: actorData,
+                            }
+                        }"></div>
+                    </div>
+                </div>
+
+                <!-- Aboutness Tab -->
+                <hr class="rp-tile-separator">
+                <div class="afs-report-page row" data-bind="if: activeSection() !== 'aboutness'">
+                    <div class="col-3">
+                        <h3 style="margin: 0px 0px 0px 60px; font-size: 17px;">Aboutness</h3>
+                    </div>
+                    <div class="col-9">
+                        <div data-bind="component: {
+                            name: 'views/components/reports/scenes/default',
+                            params: {
+                                data: aboutnessData
+                            }
+                        }"></div>
+                    </div>
+                </div>
+
+                <!-- Location Tab -->
+                <hr class="rp-tile-separator">
+                <div class="afs-report-page row" data-bind="if: activeSection() !== 'location'">
+                    <div class="col-3">
+                        <h3 style="margin: 0px 0px 0px 60px; font-size: 17px;">Location</h3>
+                    </div>
+                    <div class="col-9">
+                        <div data-bind="component: {
+                           name: 'views/components/reports/scenes/default',
+                           params: {
+                               data: locationData
+                           }
+                       }"></div>
+                    </div>
+                </div>
+
+                <!-- Parthood Tab -->
+                <hr class="rp-tile-separator">
+                <div class="afs-report-page row" data-bind="if: activeSection() !== 'parthood'">
+                    <div class="col-3">
+                        <h3 style="margin: 0px 0px 0px 60px; font-size: 17px;">Parthood</h3>
+                    </div>
+                    <div class="col-9">
+                        <div data-bind="component: {
+                           name: 'views/components/reports/scenes/default',
+                           params: {
+                               data: parthoodData,
+                           }
+                       }"></div>
+                        <div class="afs-report-section">
+                            <h2 class="afs-report-section-title">
+                                <i data-bind="click: function() {toggleVisibility(visible.parts)}, css: {'fa-angle-double-right': visible.parts(), 'fa-angle-double-up': !visible.parts()}" class="fa toggle"></i> {% trans "Parts" %}
+                            </h2>
+                            <span data-bind="if: $data.cards && $data.cards['parts of object']">
+                                <a class="afs-report-a" data-bind="click: function(){addNewTile($data.cards['parts of object'])}">
+                                    <i class="fa fa-mail-reply"></i> {% trans "Add Part" %} </a>
+                            </span>
+                            <div data-bind="visible: visible.parts" class="afs-report-collapsible-container pad-lft">
+                                <!-- ko ifnot: Array.isArray(annotation.info) -->
+                                <div class="afs-nodata-note">No parts for this resource</div>
+                                <!-- /ko -->
+                                <!-- ko if: Array.isArray(annotation.info) -->
+                                <div class="pad-top-sm" data-bind="with: annotation, as: 'annotation', noChildContext: true">
+                                    <div data-bind="component: {
+                                        name: 'views/components/reports/scenes/annotation-parts',
+                                        params: {
+                                            annotation: annotation,
+                                            selectedAnnotationTileId: selectedAnnotationTileId,
+                                            annotationTableHeader: annotationTableHeader,
+                                            annotationTableConfig: annotationTableConfig,
+                                        }}"></div>
+                                </div>
+                                <!-- /ko -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sethood Tab -->
+                <hr class="rp-tile-separator">
+                <div class="afs-report-page row" data-bind="if: activeSection() !== 'sethood'">
+                    <div class="col-3">
+                        <h3 style="margin: 0px 0px 0px 60px; font-size: 17px;">Sethood</h3>
+                    </div>
+                    <div class="col-9">
+                        <div data-bind="component: {
+                           name: 'views/components/reports/scenes/default',
+                           params: {
+                               data: sethoodData,
+                           }
+                       }"></div>
+                        <div data-bind="component: {
+                                name: 'views/components/reports/scenes/existence',
+                                params: {
+                                    data: resource,
+                                    cards: setCards,
+                                    events: setEvents,
+                                    dataConfig: setDataConfig,
+                                }
+                            }"></div>
+                  </div>
+                </div>
+
+                <!-- JSON Tab -->
+                <hr class="rp-tile-separator">
+                <div class="afs-report-page row" data-bind="if: activeSection() !== 'json'">
+                    <div class="col-3">
+                        <h3 style="margin: 0px 0px 0px 60px; font-size: 17px;">JSON</h3>
+                    </div>
+                    <div class="col-9">
+                        <div class="afs-flex-col" data-bind="component: {
+                           name: 'views/components/reports/scenes/json',
+                           params: {
+                               resourceInstanceId: reportMetadata().resourceinstanceid,
+                           }
+                       }"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock body %}
+{% endblock report %}
+
+{% block summary %}
+<div class="afs-summary-report-header">
+    <h1 class="afs-summary-report-title">
+        <span data-bind="text: displayname" class="afs-report-instance-name"></span>
+        <span class="afs-report-name pad-lft-sm">{% trans "(Physical Thing)" %}</span>
+    </h1>
+</div>
+<div class="model-summary-report">
+    <div class="afs-report-page">
+        <!-- Names -->
+        <div data-bind="component: {
+            name: 'views/components/reports/scenes/name',
+            params: {
+                data: resource,
+                cards: nameCards
+            }
+        }"></div>
+        <!-- Description -->
+        <div class="margin-top-summary" data-bind="component: {
+            name: 'views/components/reports/scenes/description',
+            params: {
+                data: resource,
+                cards: descriptionCards,
+            }
+        }"></div>
+    </div>
+</div>
+{% endblock summary %}
