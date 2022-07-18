@@ -1,5 +1,5 @@
 """
-Django settings for myproject project.
+Django settings for dataspace project.
 """
 
 import os
@@ -12,14 +12,14 @@ try:
 except ImportError:
     pass
 
-APP_NAME = 'myproject'
+APP_NAME = 'dataspace'
 APP_ROOT = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 STATICFILES_DIRS =  (os.path.join(APP_ROOT, 'media'),) + STATICFILES_DIRS
 
-DATATYPE_LOCATIONS.append('myproject.datatypes')
-FUNCTION_LOCATIONS.append('myproject.functions')
-ETL_MODULE_LOCATIONS.append('myproject.etl_modules')
-SEARCH_COMPONENT_LOCATIONS.append('myproject.search_components')
+DATATYPE_LOCATIONS.append('dataspace.datatypes')
+FUNCTION_LOCATIONS.append('dataspace.functions')
+ETL_MODULE_LOCATIONS.append('dataspace.etl_modules')
+SEARCH_COMPONENT_LOCATIONS.append('dataspace.search_components')
 TEMPLATES[0]['DIRS'].append(os.path.join(APP_ROOT, 'functions', 'templates'))
 TEMPLATES[0]['DIRS'].append(os.path.join(APP_ROOT, 'widgets', 'templates'))
 TEMPLATES[0]['DIRS'].insert(0, os.path.join(APP_ROOT, 'templates'))
@@ -35,14 +35,14 @@ SECRET_KEY = '%x8=3g34#ms5%n71)h1jm@btmm&j6z&a2izlw9c(54!xb4yyp$'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ROOT_URLCONF = 'myproject.urls'
+ROOT_URLCONF = 'dataspace.urls'
 
 # a prefix to append to all elasticsearch indexes, note: must be lower case
-ELASTICSEARCH_PREFIX = 'myproject'
+ELASTICSEARCH_PREFIX = 'dataspace'
 
 ELASTICSEARCH_CUSTOM_INDEXES = []
 # [{
-#     'module': 'myproject.search_indexes.sample_index.SampleIndex',
+#     'module': 'dataspace.search_indexes.sample_index.SampleIndex',
 #     'name': 'my_new_custom_index', <-- follow ES index naming rules
 #     'should_update_asynchronously': False  <-- denotes if asynchronously updating the index would affect custom functionality within the project.
 # }]
@@ -61,7 +61,7 @@ DATABASES = {
         "CONN_MAX_AGE": 0,
         "ENGINE": "django.contrib.gis.db.backends.postgis",
         "HOST": "localhost",
-        "NAME": "myproject",
+        "NAME": "dataspace",
         "OPTIONS": {},
         "PASSWORD": "postgis",
         "PORT": "5432",
@@ -96,7 +96,7 @@ INSTALLED_APPS = (
     "django_celery_results",
     "compressor",
     # "silk",
-    "myproject",
+    "dataspace",
 )
 
 MIDDLEWARE = [
@@ -119,7 +119,7 @@ MIDDLEWARE = [
 ALLOWED_HOSTS = []
 
 SYSTEM_SETTINGS_LOCAL_PATH = os.path.join(APP_ROOT, 'system_settings', 'System_Settings.json')
-WSGI_APPLICATION = 'myproject.wsgi.application'
+WSGI_APPLICATION = 'dataspace.wsgi.application'
 
 # URL that handles the media served from MEDIA_ROOT, used for managing stored files.
 # It must end in a slash if set to a non-empty value.
@@ -179,7 +179,7 @@ LOGGING = {
 DATA_UPLOAD_MAX_MEMORY_SIZE = 15728640
 
 # Unique session cookie ensures that logins are treated separately for each app
-SESSION_COOKIE_NAME = 'myproject'
+SESSION_COOKIE_NAME = 'dataspace'
 
 # For more info on configuring your cache: https://docs.djangoproject.com/en/2.2/topics/cache/
 CACHES = {
