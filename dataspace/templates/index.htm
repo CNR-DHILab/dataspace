@@ -1,555 +1,630 @@
-<!--
-ARCHES - a program developed to inventory and manage immovable cultural heritage.
-Copyright (C) 2013 J. Paul Getty Trust and World Monuments Fund
+<!-- Colors:
+Data Space Blue: #213B55
+Data Space Blue Lighter: #2F4867
+Data Space Blue Darker: #1E2D40 -->
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as
-published by the Free Software Foundation, either version 3 of the
-License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU Affero General Public License for more details.
-
-You should have received a copy of the GNU Affero General Public License
-along with this program. If not, see <http://www.gnu.org/licenses/>.
--->
+{% load i18n %}
 {% load staticfiles %}
 {% load template_tags %}
-{% load i18n %}
-<!DOCTYPE html>
-<!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
-<!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
-<!--[if !IE]><!-->
+
+<!doctype html>
 <html lang="en">
-<!--<![endif]-->
 
-<head>
-    <title>{{app_title}}</title>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="ISPC's Data Space Home Page">
+        <meta name="author" content="Arches (Enzo Coccca & Gerardo Anglada)">
 
-    <!-- Meta -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
+        <title>ISPC Data Space | Heritage Data Management</title>
+        <link rel="shortcut icon" href="{% static 'img/logos/favicon_dataspace.svg' %}" />
 
-    <link rel="shortcut icon" href="{% static 'img/favicon.png' %}" />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css" rel="stylesheet">
+        <link href="https://unpkg.com/flickity@2/dist/flickity.min.css" rel="stylesheet">
 
-    <link rel='stylesheet' type='text/css' href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600&amp;subset=cyrillic,latin'>
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/css/bootstrap.min.css">
+        <link href="{% static 'css/index.css' %}" rel="stylesheet">
+    </head>
 
-    <link href="{% static 'css/unify.css' %}" rel="stylesheet">
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css">
-    <link href="{% static 'css/index.css' %}" rel="stylesheet">
-    {% if app_settings.ACCESSIBILITY_MODE %}
-    <link href="{% static 'css/accessibility.css' %}" rel="stylesheet">
-    {% endif %}
-</head>
-
-<body>
-
-    <!--=== Header ===-->
-    <header>
-        <nav class="v5-splash-navbar navbar" role="navigation">
+    <body data-bs-spy="scroll" data-bs-target="#scrollspy-list" data-bs-offset="0" data-bs-smooth-scroll="true" class="scrollspy-example" tabindex="0">
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-dark py-0 px-4 sticky-top" style="background-color:#213B55;">
             <div class="container-fluid">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#myNavbar" aria-expanded="false" aria-controls="myNavbar">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
+                <a class="navbar-brand mx-4 fs-4 fw-semibold align-start" href="#">
+                    <img src="{% static 'img/logos/dataspace_icon.svg' %}" alt="ISPC Logo" width="40" height="40" class="d-inline align-top">
+                    Data Space | ISPC
+                </a>
 
-                    <div class="relative nav-brand-container">
-                        <div class="navbar-brand-v5-icon-container">
-                            <img class="navbar-brand-v5-icon" src="{% static 'img/landing/Arches_logo_white.png' %}" alt="Arches Logo">
-                        </div>
-                        <div class="application-name">
-                            <h1>{% blocktrans %}Arches | {{version}}{% endblocktrans %}</h1>
-                        </div>
-                    </div>
-                </div>
+                <div class="collapse navbar-collapse" id="navbarISPC">
+                    <div class="navbar-nav">
+                        <a class="nav-link fw-light py-3" href="#what-is">{% trans "What is it?" %}</a>
+                        <a class="nav-link fw-light py-3 active" href="{% url 'search_home' %}">{% trans "Search" %}</a>
 
-                <div id="myNavbar" class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav navbar-right">
-                        <li>
-                            <a href="#info-block-1">{% trans "Arches Features" %}</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'search_home' %}">{% trans "Search Arches" %}</a>
-                        </li>
                         {% if user|can_create_resource_instance and user.username != 'anonymous' %}
-                            <li>
-                                <a href="{% url 'resource' %}" target="_blank">{% trans "Manage" %}</a>
-                            </li>
+                        <a class="nav-link fw-light py-3 active" href="{% url 'resource' %}">{% trans "Resource Manager" %}</a>
                         {% endif %}
-                        {% if user.username == 'anonymous' %}
-                            <li>
-                                <a class="application-login" id="auth-link" href="{% url 'auth' %}?next={% url 'home' %}{% if user.username != 'anonymous' %}&logout=true{% endif %}">{% trans "Sign in" %}</a>
-                            </li>
-                        {% else %}
-                            <li>
-                                <a class="auth-welcome" href="{% url 'user_profile_manager' %}">
-                                    {% trans "Welcome, " %} {{ user.first_name|default:user.username }}
-                                </a>
-                            </li>
-                            <li>
-                                <a class="application-login" href="{% url 'auth' %}?next={% url 'home' %}{% if user.username != 'anonymous' %}&logout=true{% endif %}">{% trans 'Log off' %}</a>
-                            </li>
-                        {% endif %}
-                        {% if show_language_swtich %}
-                            <li>
-                                {% get_current_language as LANGUAGE_CODE %}
-                                <div class="lang-switch" style="max-width: none;" data-bind='component: {
-                                    name: "views/components/language-switcher",
-                                    params: {
-                                        current_language: "{{LANGUAGE_CODE}}"
-                                    }
-                                }'></div>
-                            </li>
-                        {% endif %}
-                    </ul>
+                    </div>
+
                 </div>
+                <span class="navbar-nav">
+                    {% if user.username == 'anonymous' %}
+                    <a class="nav-link py-lg-3" href="{% url 'auth' %}?next={% url 'home' %}{% if user.username != 'anonymous' %}&logout=true{% endif %}" style="color: #13ce67">
+                        {% trans "Sign in" %}
+                    </a>
+                    {% else %}
+                    <a class="text-light nav-link py-lg-3" href="{% url 'user_profile_manager' %}">
+                        {% trans "Welcome" %}, {{ user.first_name|default:user.username }}
+                    </a>
+                    <a class="nav-link py-lg-3" href="{% url 'auth' %}?next={% url 'home' %}{% if user.username != 'anonymous' %}&logout=true{% endif %}" style="color: #13ce67">
+                        {% trans 'Log out' %}
+                    </a>
+                    {% endif %}
+                </span>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarISPC" aria-controls="navbarISPC" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
             </div>
         </nav>
-    </header>
-    <!--=== End Header ===-->
+        <!-- End Navbar -->
 
-    <main>
-        <article>
-            <!-- Intro Section -->
-            <section id="info-block-0" class="app-info-block intro-section relative">
-                <!-- Vertical Nav -->
-                <div class="vertical-nav-container-background"></div>
 
-                <div id="cd-vertical-nav" class="vertical-nav-container">
-                    <ul class="vertical-nav-list">
-                        <li class="active">
-                            <a class="vertical-nav-list-link" href="#info-block-0" data-number="1" aria-label="Go to the top of the page">
-                                <span class="vertical-nav-list-ref">{% trans "Home" %}</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="vertical-nav-list-link" href="#info-block-1" data-number="2" aria-label="Go to the fast section">
-                                <span class="vertical-nav-list-ref">{% trans "Fast" %}</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="vertical-nav-list-link" href="#info-block-2" data-number="3" aria-label="Go to the workflows section">
-                                <span class="vertical-nav-list-ref">{% trans "Workflows" %}</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="vertical-nav-list-link" href="#info-block-3" data-number="4" aria-label="Go to the search tools section">
-                                <span class="vertical-nav-list-ref">{% trans "Search Tools" %}</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="vertical-nav-list-link" href="#info-block-4" data-number="5" aria-label="Go to the mobile section">
-                                <span class="vertical-nav-list-ref">{% trans "Mobile" %}</span>
-                            </a>
-                        </li>
+        <!-- Scrollspy -->
+        <div id="scrollspy-list" class="scrollspy-nav d-none d-md-block">
+          <ul class="scrollspy-list text-center">
+            <li class="active">
+                <a class="scrollspy-link text-decoration-none" href="#carouselDataSpace" data-bs-container="body" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-placement="left" data-bs-content="Top">
+                  <i class="bi-text-indent-left scrollspy-icon"></i>
+                </a>
+            </li>
+
+            <li>
+                <a class="scrollspy-link text-decoration-none" href="#what-is" data-bs-container="body" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-placement="left" data-bs-content="What is it?">
+                  <i class="bi-text-indent-left scrollspy-icon"></i>
+                </a>
+            </li>
+
+            <li>
+                <a class="scrollspy-link text-decoration-none" href="#resources-services" data-bs-container="body" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-placement="left" data-bs-content="Resources">
+                  <i class="bi-text-indent-left scrollspy-icon"></i>
+                </a>
+            </li>
+
+            <li>
+                <a class="scrollspy-link text-decoration-none" href="#latest-published" data-bs-container="body" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-placement="left" data-bs-content="Latest">
+                  <i class="bi-text-indent-left scrollspy-icon"></i>
+                </a>
+            </li>
+          </ul>
+
+        </div>
+        <!-- End Scrollspy -->
+
+
+        <!-- Carousel -->
+        <div id="carouselDataSpace" class="carousel slide carousel-fade" style="height: calc(100vh - 100px);" data-bs-ride="carousel" data-bs-interval="4000">
+            <div class="carousel-indicators" style="margin-bottom: 3rem;">
+                <button type="button" data-bs-target="#carouselDataSpace" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#carouselDataSpace" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#carouselDataSpace" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                <button type="button" data-bs-target="#carouselDataSpace" data-bs-slide-to="3" aria-label="Slide 4"></button>
+                <button type="button" data-bs-target="#carouselDataSpace" data-bs-slide-to="4" aria-label="Slide 5"></button>
+            </div>
+
+            <div class="carousel-inner h-100">
+                <div class="carousel-item active h-100" >
+                    <img src="{% static 'img/landing/Musei_Vaticani.jpeg' %}" class="d-block w-100 h-100" style="object-fit: cover;" alt="Slide 1 Photo">
+                    <div class="image-gradient"></div>
+                    <div class="carousel-caption text-start mb-5 pb-5">
+                        <h1 class="fw-lighter" style="text-shadow: 0.2px 0.2px 2px #000;">
+                            {% trans "Diagnostic Investigation Datasets" %}
+                        </h1>
+                        <h3 class="fw-light" style="text-shadow: 0.2px 0.2px 2px #000;">
+                            {% trans "The study of a Mesoamerican manuscript" %}
+                        </h3>
+                    </div>
+                </div>
+
+                <div class="carousel-item h-100">
+                    <img src="{% static 'img/landing/QB2006_falso colore.jpg' %}" class="d-block w-100 h-100" style="object-fit: cover;" alt="Slide 2 Photo">
+                    <div class="image-gradient"></div>
+                    <div class="carousel-caption text-start mb-5 pb-5">
+                        <h1 class="fw-lighter" style="text-shadow: 0.2px 0.2px 2px #000;">
+                            {% trans "Digital Archaeological Maps for Ancient Topography" %}
+                        </h1>
+                        <h3 class="fw-light" style="text-shadow: 0.2px 0.2px 2px #000;">
+                            {% trans "Hatra (Iraq) in a pan-sharpened false-colored infrared image" %}
+                        </h3>
+                    </div>
+                </div>
+
+                <div class="carousel-item h-100">
+                    <img src="{% static 'img/landing/Epigrafe.JPG' %}" class="d-block w-100 h-100" style="object-fit: cover;" alt="Slide 3 Photo">
+                    <div class="image-gradient"></div>
+                    <div class="carousel-caption text-start mb-5 pb-5">
+                        <h1 class="fw-lighter" style="text-shadow: 0.2px 0.2px 2px #000;">
+                            {% trans "Support Tools for Heritage Databases" %}
+                        </h1>
+                        <h3 class="fw-light" style="text-shadow: 0.2px 0.2px 2px #000;">
+                          {% trans "The Digital Archive for the study of pre-islamic arabian inscriptions" %}
+                        </h3>
+                    </div>
+                </div>
+
+                <div class="carousel-item h-100">
+                    <img src="{% static 'img/landing/DHiLab_ISPC_enhancement.jpg' %}" class="d-block w-100 h-100" style="object-fit: cover;" alt="Slide 4 Photo">
+                    <div class="image-gradient"></div>
+                    <div class="carousel-caption text-start mb-5 pb-5">
+                        <h1 class="fw-lighter" style="text-shadow: 0.2px 0.2px 2px #000;">
+                            {% trans "Innovative Services for the immersive inspection of Heritage data" %}
+                        </h1>
+                        <h3 class="fw-light" style="text-shadow: 0.2px 0.2px 2px #000;">
+                            {% trans "Aton framework example" %}
+                        </h3>
+                    </div>
+                </div>
+
+                <div class="carousel-item h-100">
+                    <img src="{% static 'img/landing/Alghero_2017.jpeg' %}" class="d-block w-100 h-100" style="object-fit: cover;" alt="Slide 5 Photo">
+                    <div class="image-gradient"></div>
+                    <div class="carousel-caption text-start mb-5 pb-5">
+                        <h1 class="fw-lighter" style="text-shadow: 0.2px 0.2px 2px #000;">
+                            {% trans "Digital Training Resources for Heritage Sciences" %}
+                        </h1>
+                        <h3 class="fw-light" style="text-shadow: 0.2px 0.2px 2px #000;">
+                            {% trans "Alghero training camp" %}
+                        </h3>
+                    </div>
+                </div>
+            </div>
+
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselDataSpace" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselDataSpace" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+
+        <div class="down-button d-none d-md-block">
+            <a href="#what-is">
+                <i class="bi-caret-down-fill down-button-icon"></i>
+            </a>
+        </div>
+        <!-- End Carousel -->
+
+
+        <!-- What is it? -->
+        <div class="container px-5 pt-5" id="what-is">
+            <div class="row px-5">
+
+                <div class="col-12 col-md-6 col-xl-4 my-auto">
+                    <p>
+                      {% trans "Data Space is a platform for the sharing, accessing, and long-term conservation of data produced by the Institute of Cultural Heritage Sciences. It allows access to innovative digital tools & services to increase the knowledge and enhance the conservation of the Cultural Heritage in an interdisciplinary perspective." %}
+                    </p>
+                </div>
+
+                <div class="col-12 col-md-6 col-xl-8">
+                    <div class="ratio ratio-16x9 border">
+                        <video poster="{% static 'img/landing/Bozza_cover.jpg' %}" controls autoplay muted>
+                            <source src="{% static 'img/landing/bozza_video.mp4' %}" type="video/mp4">
+                        </video>
+                    </div>
+                    <hr class="card-inline-separator">
+                    <p class="text-end lead">{% trans "ISPC Data Space | Presentation Video" %}</p>
+                </div>
+
+            </div>
+        </div>
+        <!-- End What is it? -->
+
+
+        <!-- Mini Section -->
+        <div id="resources-services" class="container-fluid">
+            <div class="row py-5"></div>
+
+            <div class="row px-5" style="margin: -75px 100px;">
+                <div class="col my-2">
+                    <div class="resource-card mx-auto" style="background: #0A3E7D;">
+                        <a class="text-center text-decoration-none" href="#">
+                            <lord-icon
+                                src="https://cdn.lordicon.com/pvbutfdk.json"
+                                trigger="morph"
+                                colors="primary:#ffffff"
+                                class="resource-icon">
+                            </lord-icon>
+                            <p class="text-light fs-6 fw-semibold mb-4">{% trans "Researchers" %}</p>
+                        </a>
+                    </div>
+                </div>
+                <div class="col my-2">
+                    <div class="resource-card mx-auto" style="background: #6A7D10;">
+                        <a class="text-center text-decoration-none" href="#">
+                            <lord-icon
+                                src="https://cdn.lordicon.com/sygggnra.json"
+                                trigger="morph"
+                                colors="primary:#ffffff"
+                                class="resource-icon">
+                            </lord-icon>
+                            <p class="text-light fs-6 fw-semibold mb-4">{% trans "Institutions" %}</p>
+                        </a>
+                    </div>
+                </div>
+                <div class="col my-2">
+                    <div class="resource-card mx-auto" style="background: #7D5100;">
+                        <a class="text-center text-decoration-none" href="#">
+                            <lord-icon
+                                src="https://cdn.lordicon.com/stxtcyyo.json"
+                                trigger="morph"
+                                colors="primary:#ffffff"
+                                class="resource-icon">
+                            </lord-icon>
+                            <p class="text-light fs-6 fw-semibold mb-4">{% trans "Students" %}</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row py-5 bg-light"></div>
+        </div>
+        <!-- End Mini Section -->
+
+
+        <!-- Resources & Services -->
+        <div class="container-fluid px-5 pb-5 bg-light">
+            <h1 class="display-6 lead text-center">{% trans "Resources & Services" %}</h1>
+            <p class="text-muted text-center px-5">{% trans "Access and use the resources and services for heritage science researchers made available through our catalogues." %}</p>
+
+            <!-- Visible only on small screens -->
+            <!-- <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xxl-6 px-5 gy-3"> -->
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xxl-6 px-5 gy-3 d-md-none">
+
+                <div class="col">
+                    <div class="card h-100">
+                        <img src="{% static 'img/icons/research_icon.svg' %}" class="card-img-top mx-auto mt-3" style="height: 55px; width:55px;" alt="...">
+                        <div class="card-body text-center">
+                            <h4 class="card-title">{% trans "Research Areas" %}</h4>
+                            <h4 class="card-subtitle mb-2 text-muted">21</h4>
+                            <p class="card-text">{% trans "A global overview of the. Etiam vitae elementum orci." %}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="card h-100">
+                        <img src="{% static 'img/icons/training_icon.svg' %}" class="card-img-top mx-auto mt-3" style="height: 55px; width:55px;" alt="...">
+                        <div class="card-body text-center">
+                            <h4 class="card-title">{% trans "Training Resources" %}</h4>
+                            <h4 class="card-subtitle mb-2 text-muted">48</h4>
+                            <p class="card-text">{% trans "Educational resources in the broad field of the Heritage Science domain." %}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="card h-100">
+                        <img src="{% static 'img/icons/vres_icon.svg' %}" class="card-img-top mx-auto mt-3" style="height: 55px; width:55px;" alt="...">
+                        <div class="card-body text-center">
+                            <h4 class="card-title">{% trans "VREs" %}</h4>
+                            <h4 class="card-subtitle mb-2 text-muted">84</h4>
+                            <p class="card-text">{% trans "Innovative Virtual Research Environments developed to serve modern Heritage Science needs." %}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="card h-100">
+                        <img src="{% static 'img/icons/datasets_icon.svg' %}" class="card-img-top mx-auto mt-3" style="height: 55px; width:55px;" alt="...">
+                        <div class="card-body text-center">
+                            <h4 class="card-title">{% trans "Datasets" %}</h4>
+                            <h4 class="card-subtitle mb-2 text-muted">213</h4>
+                            <p class="card-text">{% trans "Main point of access for searching and browsing datasets." %}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="card h-100">
+                        <img src="{% static 'img/icons/services_icon.svg' %}" class="card-img-top mx-auto mt-3" style="height: 55px; width:55px;" alt="...">
+                        <div class="card-body text-center">
+                            <h4 class="card-title">{% trans "Services" %}</h4>
+                            <h4 class="card-subtitle mb-2 text-muted">36</h4>
+                            <p class="card-text">{% trans "Main point of access for innovative services in Heritage Science discipline." %}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="card h-100">
+                        <img src="{% static 'img/icons/workflows_icon.svg' %}" class="card-img-top mx-auto mt-3" style="height: 55px; width:55px;" alt="...">
+                        <div class="card-body text-center">
+                            <h4 class="card-title">{% trans "Workflows" %}</h4>
+                            <h4 class="card-subtitle mb-2 text-muted">112</h4>
+                            <p class="card-text">{% trans "Practical solutions for the formalization and description of research workflows." %}</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- Carousel Visible only on larger screens -->
+            <!-- <div class="row px-lg-5 mt-4 mx-lg-5 d-none"> -->
+            <div class="row px-lg-5 mt-4 mx-lg-5 d-none d-md-block">
+                <div class="main-carousel">
+
+                    <div class="carousel-cell">
+                        <div class="card mx-2" style="min-height: 250px;">
+                            <img src="{% static 'img/icons/research_icon.svg' %}" class="card-img-top mx-auto mt-3" style="height: 55px; width:55px;" alt="...">
+                            <div class="card-body text-center">
+                                <h4 class="card-title">{% trans "Research Areas" %}</h4>
+                                <h4 class="card-subtitle mb-2 text-muted">21</h4>
+                                <p class="card-text">{% trans "A global overview of the. Etiam vitae elementum orci." %}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="carousel-cell">
+                        <div class="card mx-2" style="min-height: 250px;">
+                            <img src="{% static 'img/icons/training_icon.svg' %}" class="card-img-top mx-auto mt-3" style="height: 55px; width:55px;" alt="...">
+                            <div class="card-body text-center">
+                                <h4 class="card-title">{% trans "Training Resources" %}</h4>
+                                <h4 class="card-subtitle mb-2 text-muted">48</h4>
+                                <p class="card-text">{% trans "Educational resources in the broad field of the Heritage Science domain." %}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="carousel-cell">
+                        <div class="card mx-2" style="min-height: 250px;">
+                            <img src="{% static 'img/icons/vres_icon.svg' %}" class="card-img-top mx-auto mt-3" style="height: 55px; width:55px;" alt="...">
+                            <div class="card-body text-center">
+                                <h4 class="card-title">{% trans "VREs" %}</h4>
+                                <h4 class="card-subtitle mb-2 text-muted">84</h4>
+                                <p class="card-text">{% trans "Innovative Virtual Research Environments developed to serve modern Heritage Science needs." %}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="carousel-cell">
+                        <div class="card mx-2" style="min-height: 250px;">
+                            <img src="{% static 'img/icons/datasets_icon.svg' %}" class="card-img-top mx-auto mt-3" style="height: 55px; width:55px;" alt="...">
+                            <div class="card-body text-center">
+                                <h4 class="card-title">{% trans "Datasets" %}</h4>
+                                <h4 class="card-subtitle mb-2 text-muted">213</h4>
+                                <p class="card-text">{% trans "Main point of access for searching and browsing datasets." %}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="carousel-cell">
+                        <div class="card mx-2" style="min-height: 250px;">
+                            <img src="{% static 'img/icons/services_icon.svg' %}" class="card-img-top mx-auto mt-3" style="height: 55px; width:55px;" alt="...">
+                            <div class="card-body text-center">
+                                <h4 class="card-title">{% trans "Services" %}</h4>
+                                <h4 class="card-subtitle mb-2 text-muted">36</h4>
+                                <p class="card-text">{% trans "Main point of access for innovative services in Heritage Science discipline." %}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="carousel-cell">
+                        <div class="card mx-2" style="min-height: 250px;">
+                            <img src="{% static 'img/icons/workflows_icon.svg' %}" class="card-img-top mx-auto mt-3" style="height: 55px; width:55px;" alt="...">
+                            <div class="card-body text-center">
+                                <h4 class="card-title">{% trans "Workflows" %}</h4>
+                                <h4 class="card-subtitle mb-2 text-muted">112</h4>
+                                <p class="card-text">{% trans "Practical solutions for the formalization and description of research workflows." %}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        <!-- End Resources & Services -->
+
+
+        <!-- Latest Published -->
+        <div id="latest-published" class="container pt-5 px-5">
+            <h1 class="display-6 lead mb-4 text-center">{% trans "Latest Published Resources" %}</h1>
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3">
+                <div class="col my-2">
+
+                  <div class="card text-center h-100">
+                      <div class="card-header">
+                          {% trans "Data Space ISPC | CNR" %}
+                      </div>
+                      <div class="card-body">
+                          <a href="#" target="_blank" class="text-reset text-decoration-none">
+                              <img class="models-image mb-3" src="{% static 'img\landing\MOLAB_Campagna.jpeg' %}">
+                              <p class="card-text">{% trans "MOLAB, National Gallery of Umbria" %}</p>
+                          </a>
+                      </div>
+                      <div class="card-footer text-muted">
+                          {% trans "2 days ago" %}
+                      </div>
+                  </div>
+
+                </div>
+                <div class="col my-2">
+
+                  <div class="card text-center h-100">
+                      <div class="card-header">
+                          {% trans "Aton ISPC | CNR" %}
+                      </div>
+                      <div class="card-body">
+                          <a href="https://aton.ispc.cnr.it/s/vhlab/sid-ac9lddw5w" target="_blank" class="text-reset text-decoration-none">
+                              <img class="models-image mb-3" src="https://aton.ispc.cnr.it/scenes/vhlab/sid-ac9lddw5w/cover.png">
+                              <p class="card-text">{% trans "Tomb of the Reliefs, Cerveteri" %}</p>
+                          </a>
+                      </div>
+                      <div class="card-footer text-muted">
+                          {% trans "3 days ago" %}
+                      </div>
+                  </div>
+
+                </div>
+                <div class="col my-2">
+
+                  <div class="card text-center h-100">
+                      <div class="card-header">
+                          {% trans "Data Space ISPC | CNR" %}
+                      </div>
+                      <div class="card-body">
+                          <a href="#" target="_blank" class="text-reset text-decoration-none">
+                              <img class="models-image mb-3" src="{% static 'img\landing\IDEHA_favignana.png' %}">
+                              <p class="card-text">{% trans "Florio Ex-Factory of the Tonnare" %}</p>
+                          </a>
+                      </div>
+                      <div class="card-footer text-muted">
+                          {% trans "2 days ago" %}
+                      </div>
+                  </div>
+
+                </div>
+                <div class="col my-2">
+
+                  <div class="card text-center h-100">
+                      <div class="card-header">
+                          {% trans "Data Space ISPC | CNR" %}
+                      </div>
+                      <div class="card-body">
+                          <a href="http://dasi.cnr.it/index.php?id=dasi_prj_epi&prjId=1&corId=0&colId=0&navId=502577838&recId=742" target="_blank" class="text-reset text-decoration-none">
+                              <img class="models-image mb-3" src="{% static 'img\landing\Epigrafe_MSM149.jpeg' %}">
+                              <p class="card-text">{% trans "Epigraph MṢM 149" %}</p>
+                          </a>
+                      </div>
+                      <div class="card-footer text-muted">
+                          {% trans "2 days ago" %}
+                      </div>
+                  </div>
+
+                </div>
+                <div class="col my-2">
+
+                  <div class="card text-center h-100">
+                      <div class="card-header">
+                          {% trans "Data Space ISPC | CNR" %}
+                      </div>
+                      <div class="card-body">
+                          <a href="#" target="_blank" class="text-reset text-decoration-none">
+                              <img class="models-image mb-3" src="{% static 'img\landing\MOLAB_Total_reflection_mid.jpeg' %}">
+                              <p class="card-text">{% trans "MOLAB, Oslo, Total reflection mid FTIR" %}</p>
+                          </a>
+                      </div>
+                      <div class="card-footer text-muted">
+                          {% trans "2 days ago" %}
+                      </div>
+                  </div>
+
+                </div>
+                <div class="col my-2">
+
+                  <div class="card text-center h-100">
+                      <div class="card-header">
+                          {% trans "Aton ISPC | CNR" %}
+                      </div>
+                      <div class="card-body">
+                          <a href="https://aton.ispc.cnr.it/s/vhlab/20220605-jsdyyi50z" target="_blank" class="text-reset text-decoration-none">
+                              <img class="models-image mb-3" src="https://aton.ispc.cnr.it/scenes/vhlab/20220605-jsdyyi50z/cover.png">
+                              <p class="card-text">{% trans "Bust of Chrysippus" %}</p>
+                          </a>
+                      </div>
+                      <div class="card-footer text-muted">
+                          {% trans "2 days ago" %}
+                      </div>
+                  </div>
+
+                </div>
+            </div>
+
+
+        </div>
+        <!-- End Latest Published -->
+
+
+        <!-- Footer -->
+        <div class="container-fluid mt-5 px-5 text-light footer-text fw-lighter" style="background: #213B55">
+            <footer class="pt-4 pb-1 px-5">
+                <h6 class="mb-3">{% trans "Institute of Heritage Science" %}</h6>
+                <div class="row mb-2">
+                    <div class="col-4 col-md-6">
+                        <h6>{% trans "Find Us" %}</h6>
+                        <p class="pb-0 mb-0">Via Cardinale Guglielmo Sanfelice 8, 80134 Napoli (NA), IT</p>
+                        <p>Tel: 081-247-0966</p>
+
+                    </div>
+
+                    <div class="col-4 col-md-3 px-5">
+                      <h6>{% trans "Useful Links" %}</h6>
+                      <ul class="nav flex-column">
+                        <li class="nav-item mb-2"><a href="#" class="p-0 link-light">{% trans "About Data Space" %}</a></li>
+                        <li class="nav-item mb-2"><a href="#" class="p-0 link-light">{% trans "Contact Us" %}</a></li>
+                      </ul>
+                    </div>
+
+                  <div class="col-4 col-md-3 px-5">
+                    <h6>{% trans "Disclaimers & Agreements" %}</h6>
+                    <ul class="nav flex-column">
+                      <li class="nav-item mb-2"><a href="#" class="p-0 link-light">{% trans "Cookies Policy" %}</a></li>
+                      <li class="nav-item mb-2"><a href="#" class="p-0 link-light">{% trans "Privacy Policy" %}</a></li>
                     </ul>
-                </div>
-
-                <!-- Splash Screen -->
-                <div class="fullscreenbanner-container">
-                    <div class="fullscreenbanner">
-                        <ul>
-                            <!-- SLIDE 1 -->
-                            <li data-transition="fade" data-slotamount="9" data-masterspeed="0" data-title="Slide 1">
-                                <!-- MAIN IMAGE -->
-                                <img src="{% static 'img/landing/landing-primary.jpg' %}" alt="slidebg1" data-bgfit="cover" data-bgposition="center center" data-bgrepeat="no-repeat">
-                                <!-- LAYERS -->
-                                <!-- NEW LAYER -->
-                                <div class="tp-caption sft start text-bold v5-splash-caption" delay="4500" data-hoffset="0" data-y="400" data-speed="800" data-start="100" data-easing="Back.easeInOut" data-endspeed="300" data-x="0">
-                                    <h2>{% blocktrans %}Arches {{version}}{% endblocktrans %}</h2>
-                                    <p>{% trans "A web and mobile platform for" %}</p>
-                                    <p style="padding-bottom: 15px;">{% trans "managing your most important resource information" %}</p>
-                                </div>
-
-                                <!-- Gradient -->
-                                <div class="image-gradient"></div>
-
-                                <!-- Attribution -->
-                                <div class="image-attribution">
-                                    <span>{% trans "Glarus thrust, Tectonic Area Sardona, Switzerland | Jonas Wagner https://www.flickr.com/photos/80225884@N06/ | Attribution 2.0 Generic (CC BY 2.0)" %}</span>
-                                </div>
-                            </li>
-                        </ul>
-                        <div class="tp-bannertimer tp-bottom"></div>
-                    </div>
-
-                    <!-- Down button -->
-                    <a href="#info-block-1" class="down-button" aria-label="Go to content"><i class="fa fa-angle-down down-button-icon"></i></a>
-                </div>
-            </section>
-            <!-- End Intro Section -->
-
-            <!-- Info Block 1 -->
-            <section id="info-block-1" class="app-info-block relative">
-                <div>
-
-                    <!-- Heading Info -->
-                    <div class="sub-section">
-                        <div class="col-lg-7">
-                            <div class="app-info-block-intro text-center">
-                                <h2 class="app-info-block-header">{% trans "Fast" %}</h2>
-                                <h3 class="app-info-block-title">{% trans "Deploy Applications Rapidly" %}</h3>
-                                <p class="app-info-block-text">
-                                    {% trans "Design custom information management applications in hours.  Build your databases with Arches Designer, then configure your interface all without having to write any code." %}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Content -->
-                    <div class="splash-img">
-                        <img src="{% static 'img/landing/imac_designer.png' %}"  alt="Arches Designer">
-                    </div>
-
-                    <!-- Sub-section -->
-                    <div class="row app-info-sub-block">
-
-                        <!-- Arches Data Type Block -->
-                        <div class="col-lg-6">
-                            <div class="sub-block-container">
-                                <h3 class="app-info-block-title">{% trans "Interface Manager" %}</h3>
-                                <p class="sub-block-description">
-                                    {% trans "Arches automatically creates data entry forms based on your data models.  Use Arches' Card Manager to configure the look and feel of your data entry UI." %}
-                                </p>
-                                <img class="sub-block-image" src="{% static 'img/landing/card_manager.png' %}" alt="Card Manager">
-                            </div>
-                        </div>
-
-                        <!-- Arches Data Type Block -->
-                        <div class="col-lg-6">
-                            <div class="sub-block-container">
-                                <h3 class="app-info-block-title">{% trans "Data Security" %}</h3>
-                                <p class="sub-block-description">
-                                    {% trans "Use Arches' Permissions Manager to set up data access rules for all your user groups and individual accounts.  You can define read/write/delete and no-access permissions." %}
-                                </p>
-                                <img class="sub-block-image" src="{% static 'img/landing/permissions_manager.png' %}" alt="Permissions Manager">
-                            </div>
-                        </div>
-
-                    </div>
-                    <!-- End Sub-section -->
+                  </div>
 
                 </div>
-            </section>
-            <!-- End Info Block 1 -->
 
-            <!-- Info Block 2 -->
-            <section id="info-block-2" class="app-info-block relative">
-                <div>
+              <div class="row justify-content-between pt-2 mt-2 border-top" style="color: #91A5CF;">
+                  <div class="col-5 col-md-4 mt-1">
+                      <span>
+                          <a class="text-reset" href="http://www.cnr.it/">{% trans "National Research Council" %}</a> –
+                          <a class="text-reset" href="https://www.ispc.cnr.it/">{% trans "Institute of Heritage Science" %}</a>
+                      </span>
+                  </div>
 
-                    <!-- Heading Info -->
-                    <div class="sub-section">
-                        <div class="col-lg-7">
-                            <div class="app-info-block-intro text-center">
-                                <h2 class="app-info-block-header">{% trans "Workflows" %}</h2>
-                                <h3 class="app-info-block-title">{% trans "Orchestrate your data entry" %}</h3>
-                                <p class="app-info-block-text">
-                                    {% trans "Design step-wise data management interfaces that simplify complex editing tasks.  Ensure that everyone enters data completely and consistently" %}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+                  <div class="col-4 d-flex align-items-center justify-content-center">
+                      <span>
+                        <img src="{% static 'img/logos/dataspace_icon.svg' %}" style="height: 30px" alt="Data Space Icon">
+                        {% trans "2022 &copy; All Rights Reserved" %}
+                      </span>
+                  </div>
 
-                    <!-- Content -->
-                    <div class="splash-img">
-                        <img class="sub-block-image" src="{% static 'img/landing/consultation_workflow.jpg' %}" alt="Arches Workflows">
-                    </div>
+                  <div class="col-3 col-md-4 text-end mt-1">
+                      <a class="text-reset" href="http://www.archesproject.org">{% trans "Powered by Arches" %}</a>
+                  </div>
 
-                </div>
-            </section>
-            <!-- End Info Block 2 -->
-
-            <!-- Info Block 3 -->
-            <section id="info-block-3" class="app-info-block relative">
-                <div>
-
-                    <!-- Heading Info -->
-                    <div class="sub-section">
-                        <div class="col-lg-7">
-                            <div class="app-info-block-intro text-center">
-                                <h2 class="app-info-block-header">{% trans "Arches Search Tools" %}</h2>
-                                <h3 class="app-info-block-title">{% trans "Find what you're looking for" %}</h3>
-                                <p class="app-info-block-text">
-                                    {% trans "Arches comes with powerful built-in search tools.  Quickly filter large databases with term, geospatial, and time-based search components" %}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="splash-img">
-                        <img class="sub-block-image" src="{% static 'img/landing/arches_search.png' %}" alt="Arches Search">
-                    </div>
-
-                    <!-- Sub-section -->
-                    <div class="wide-box">
-                        <div class="box-highlight">
-                            <h3 class="app-info-block-header">{% trans "Search Options" %}</h3>
-                            <p>
-                                {% trans "Arches gives you many ways to find precisely the information you need, even if your Arches application contains 10's of millions of records.  In addition to term, thesaurus, geospatial, and temporal filters, Arches provides you with advanced filtering options that support boolean logic, inverses, and many other filtering options." %}
-                            </p>
-                            <br>
-                            <p>
-                                {% trans "Arches' search capabilities also provide for sophisticated data visualizations, including interactive displays of the connections between your data objects using a Force Directed Graph." %}
-                            </p>
-                            <br>
-                            <p>
-                                {% trans "If you're a software developer, you can build on Arches modular search services and create your own filters, reports, and visualizations to best show off your particular dataset." %}
-                            </p>
-
-                        </div>
-                    </div>
-
-                </div>
-            </section>
-            <!-- End Info Block 3 -->
-
-            <!-- Info Block 4 -->
-            <section id="info-block-4" class="app-info-block relative">
-                <div>
-                    <!-- Heading Info -->
-                    <div class="sub-section">
-                    </div>
-                    <!-- Content -->
-                    <div class="row">
-                        <div class="col-md-6 col-lg-4 text-center">
-                            <img class="iphone" src="{% static 'img/landing/IPhone_8_map.png' %}" alt="Arches Designer">
-                        </div>
-                        <div class="col-md-6 col-lg-8">
-                            <div class="mobile-description-container">
-                                <div class="box-highlight">
-                                    <h2 class="app-info-block-title">{% trans "Work on the go..." %}</h2>
-                                    <p>
-                                        {% trans "Arches Collector allows you to create new data and edit existing records when you're away from your computer.  Don't worry if you're out of cell or Wi-Fi range.  Create new records, update information, even add new map locations.  Then synch your changes to your Arches application when you re-establish a network connection." %}
-                                    </p>
-                                    <br>
-                                    <p>
-                                        {% trans "Arches Collector is available for iOS and Android devices.  Download the app from your favorite marketplace." %}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <!-- End Info Block 4 -->
-        </article>
-    </main>
-
-
-
-    <!-- Footer -->
-    <footer>
-
-        <!-- footer content container -->
-        <div class="row footer-links">
-
-            <!-- branding column -->
-            <div class="col-lg-4">
-                <h2 class="app-footer-heading">{% trans "Sample Institution Name" %}</h2>
-
-                <div class="organization-address">
-                  {% trans "Sample Address" %}<br>
-                  {% trans "Getty Conservation Institute" %}<br>
-                  {% trans "1200 Getty Center Drive" %}<br>
-                  {% trans "Los Angeles, CA  90049" %}<br>
-                </div>
-            </div>
-
-            <!-- Info Column -->
-            <div class="col-lg-8">
-                <h2 class="app-footer-heading">{% trans "Guides and Documentation" %}</h2>
-
-                <!-- Links -->
-                <div class="splash-links">
-                    <div class="row">
-                        <div class="col-lg-4">
-                            <ul class="splash-link-container">
-                                <li>
-                                    <a class="splash-link-address" href="http://https://www.archesproject.org/what-is-arches/" target="_blank">{% trans "What is Arches" %}</a>
-                                </li>
-                                <li>
-                                    <a class="splash-link-address" href="https://www.archesproject.org/collector/" target="_blank">{% trans "Arches Collector" %}</a>
-                                </li>
-                                <li>
-                                    <a class="splash-link-address" href="https://www.archesproject.org/implementation-considerations/" target="_blank">{% trans "Implementation Considerations" %}</a>
-                                </li>
-                                <li>
-                                    <a class="splash-link-address" href="https://www.archesproject.org/development/" target="_blank">{% trans "Information For Developers" %}</a>
-                                </li>
-
-
-                            </ul>
-                        </div>
-
-                        <div class="col-lg-4">
-                            <ul class="splash-link-container">
-                                <li>
-                                    <a class="splash-link-address" href="https://www.archesproject.org/faq/" target="_blank">{% trans "FAQ" %}</a>
-                                </li>
-                                <li>
-                                    <a class="splash-link-address" href="https://www.archesproject.org/standards/" target="_blank">{% trans "Standards and Interoperability" %}</a>
-                                </li>
-                                <li>
-                                    <a class="splash-link-address" href="https://arches.readthedocs.io/en/stable/requirements-and-dependencies/" target="_blank">{% trans "Installation Guide" %}</a>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div class="col-lg-4">
-                            <ul class="splash-link-container">
-                                <li>
-                                    <a class="splash-link-address" href="https://www.archesproject.org/project-background/" target="_blank">{% trans "Arches Project Background" %}</a>
-                                </li>
-                                <li>
-                                    <a class="splash-link-address" href="https://www.archesproject.org/videos/" target="_blank">{% trans "Arches Webinars/Presentations" %}</a>
-                                </li>
-                                <li>
-                                    <a class="splash-link-address" href="https://www.archesproject.org/resource-models/" target="_blank">{% trans "Resource Models" %}</a>
-                                </li>
-                            </ul>
-                        </div>
-
-                    </div>
-                </div>
-
-            </div>
+              </div>
+            </footer>
         </div>
-
-        <!-- Copyright Panel -->
-        <div class="row copyright-container">
-            <!-- Arches link -->
-            <div class="app-footer-links">
-                <div class="col-sm-8">
-                    <a class="link-spacing" href="#">{% trans "Terms & Conditions" %}</a>
-                    <a class="link-spacing" href="#">{% trans "Privacy Policy" %}</a>
-                </div>
-                <div class="col-sm-4">
-                    <a class="app-footer-arches-link" href="http://www.archesproject.org" target="_blank">{% trans "Powered by Arches" %}</a>
-                </div>
-            </div>
-        </div>
-        <!-- End Copyright Container -->
-
-    </footer>
-    <!-- End Footer -->
-
-<script src="{% static 'packages/requirejs/require.js' %}"></script>
-
-<script>
-
-    require.config({
-        baseUrl: '{{ STATIC_URL }}js',
-        paths: {
-            'templates': '{% url "templates" ""%}'.replace(/\/$/, ""),
-            'text': '{{ STATIC_URL }}packages/requirejs-text/text',
-            'jquery-lib': '{{ STATIC_URL }}packages/jquery/dist/jquery.min',
-            'jquery': '{{ STATIC_URL }}packages/jquery-migrate/dist/jquery-migrate.min',
-            'jquery-ui': '{{ STATIC_URL }}packages/jqueryui/jquery-ui.min',
-            'underscore': '{{ STATIC_URL }}packages/underscore/underscore-min',
-            'chosen': '{{ STATIC_URL }}packages/chosen-js/chosen.jquery.min',
-            'knockout': '{{ STATIC_URL }}packages/knockout/build/output/knockout-latest',
-            'bootstrap': '{{ STATIC_URL }}packages/bootstrap/dist/js/bootstrap.min',
-            'themepunch-tools': '{{ STATIC_URL }}plugins/revolution-slider/rs-plugin/js/jquery.themepunch.tools.min',
-            'themepunch-revolution': '{{ STATIC_URL }}plugins/revolution-slider/rs-plugin/js/jquery.themepunch.revolution',
-            'revolution-slider': '{{ STATIC_URL }}plugins/revolution-slider',
-            'one-app': '{{ STATIC_URL }}plugins/one.app',
-        },
-        shim: {
-            'jquery': {
-                deps: ['jquery-lib'],
-                exports: '$'
-            },
-            'bootstrap': {
-                deps: ['jquery', 'jquery-ui']
-            },
-            'chosen': {
-                deps: ['jquery'],
-            },
-            'themepunch-tools': {
-                deps: ['jquery'],
-            },
-            'themepunch-revolution': {
-                deps: ['jquery'],
-            },
-            'revolution-slider': {
-                deps: ['jquery'],
-            },
-            'one-app': {
-                deps: ['jquery'],
-            }
-        }
-    });
-    require(
-        ['jquery',
-            'knockout',
-            'bootstrap',
-            'themepunch-tools',
-            'themepunch-revolution',
-            'revolution-slider',
-            'one-app',
-            'bindings/chosen',
-            'views/components/language-switcher'
-        ], function ($, ko) {
-            $(document).ready(function () {
-                App.init();
-                RevolutionSlider.initRSfullScreen();
-
-                var contentSections = $('.app-info-block'),
-                    navigationItems = $('#cd-vertical-nav a');
-
-                updateNavigation();
-                $(window).on('scroll', function () {
-                    updateNavigation();
-                });
-
-                //smooth scroll to the section
-                navigationItems.on('click', function (event) {
-                    event.preventDefault();
-                    smoothScroll($(this.hash));
-                });
+        <!-- End Footer -->
 
 
-                function updateNavigation() {
-                    contentSections.each(function () {
-                        $this = $(this);
-                        var activeSection = $('#cd-vertical-nav a[href="#' + $this.attr('id') + '"]').data('number') - 1;
-                        if (($this.offset().top - $(window).height() / 2 < $(window).scrollTop()) && ($this.offset().top + $this.height() - $(window).height() / 2 > $(window).scrollTop())) {
-                            navigationItems.eq(activeSection).addClass('is-selected');
-                        } else {
-                            navigationItems.eq(activeSection).removeClass('is-selected');
-                        }
-                    });
-                }
+        <!-- Scripts -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"></script>
+        <script src="https://cdn.lordicon.com/xdjxvujz.js"></script>
 
-                function smoothScroll(target) {
-                    $('body,html').animate(
-                        { 'scrollTop': target.offset().top },
-                        600
-                    );
-                }
+        <script type="text/javascript">
 
-                var ViewModel = function () {
-                     // place observables here
-                };
+            const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+            const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
 
-                // need to have this to prevent mismatched anonymous define error in require.js
-                setTimeout(function () {
-                    ko.applyBindings(new ViewModel());
-                }, 300);
+            let elem = document.querySelector('.main-carousel');
+            let flkty = new Flickity( elem, {
+              // options
+              cellAlign: 'center',
+              contain: true,
+              autoPlay: true,
+              wrapAround: true,
+              groupCells: 2
             });
 
-        }
-    );
-</script>
-
-</body>
+        </script>
+        <!-- End Scripts -->
+    </body>
 
 </html>
