@@ -79,7 +79,11 @@ La piattaforma dovrebbe essere raggiungibile in `localhost` sulla porta 8000 di 
   - Non hai bisogno di QGIS o GRASS
 - Node.js
 
-## Dipendenze Unix/Linux (***TODO***)
+## Dipendenze Unix/Linux
+
+In ambiente Linux, nello specifico Debian/Ubuntu, potrebbe essere necessario installare i seguenti pacchetti, prima di installare Arches, per garantire il corretto funzionamento del modulo Python `psycopg2`:
+
+    sudo apt update && sudo apt install libpq-dev libssl-dev python3-dev build-essentials -y
 
 ## Link utili
 
